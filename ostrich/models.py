@@ -17,13 +17,26 @@ class Light(models.Model):
 	lightid = models.CharField(max_length=32,unique=True)
 	lattitude = models.FloatField(null=False, blank=False)
 	longitude = models.FloatField(null=False, blank=False)
+	active = models.BooleanField(default=0) #0=Broken, 1= Working
+	operating = models.BooleanField(default=1)
+	
+	def __str__(self):
+		return self.title + " - Active: " + ('Yes' if self.active==True else 'No')
 
 class Status(models.Model):
 	light = models.ForeignKey(Light,on_delete=models.CASCADE)
 	broken = models.BooleanField(default=0)
 	sender = models.BooleanField(default=0)
 	status = models.CharField(max_length=100) # R = reg, Y = yellow, G = green, C = clock
-	recieved_at = models.DateTimeField(default=timezone.now)
+	recieved_at	 = models.DateTimeField(default=timezone.now)
+	mobile = models.CharField(max_length=15,blank=True,  null=True)
+
+	def __str__(self):
+		return self.light.title
+
+class Update(models.Model):
+	status = models.ForeignKey(Status, on_delete=models.CASCADE)
+	text = models.CharField(max_length=255, blank=False,null=False)
 
 class Camera(models.Model):
 	lattitude = models.FloatField(null=False, blank=False)
